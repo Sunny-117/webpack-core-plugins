@@ -14,6 +14,7 @@ export interface JsPackOptions {
   mode: 'development' | 'production'
   devtool: boolean
   entry: string
+  context: unknown
   output: {
     path: string
     filename: string
@@ -21,7 +22,7 @@ export interface JsPackOptions {
 }
 
 export function jspack(options: JsPackOptions) {
-  const compiler = new Compiler(options)
+  const compiler = new Compiler(options.context)
   compiler.options = options
   new NodeEnvironmentPlugin().apply(compiler) // Enable the compiler to read and write files
 
