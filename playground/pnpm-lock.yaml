@@ -1,0 +1,7 @@
+lockfileVersion: 5.3
+
+specifiers:
+  '@sunny-117/jspack': link:..
+
+dependencies:
+  '@sunny-117/jspack': link:..
