@@ -1,3 +1,12 @@
-const title = require('./title.js')
+// const title = require('./title.js')
+// console.log(title)
 
-console.log(title)
+require('./sync')
+
+import(/* jspackChunkName: "title" */ './title').then((result) => {
+  console.log(result)
+})
+
+import(/* jspackChunkName: "sum" */ './sum').then((result) => {
+  console.log(result)
+})

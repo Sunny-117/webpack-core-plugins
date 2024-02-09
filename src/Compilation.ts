@@ -14,9 +14,10 @@ import type { JsPackOptions } from '.'
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 
-const mainTemplate = fs.readFileSync(path.join(__dirname, 'templates', 'main.ejs'), 'utf8')
+const mainTemplate = fs.readFileSync(path.join(__dirname, 'templates', 'asyncMain.ejs'), 'utf8')
 const mainRender = ejs.compile(mainTemplate)
-
+const chunkTemplate = fs.readFileSync(path.join(__dirname, 'templates', 'chunk.ejs'), 'utf8')
+const chunkRender = ejs.compile(chunkTemplate)
 const parser = new Parser() // single instance!! all module is shared
 
 const normalModuleFactory = new NormalModuleFactory() // single instance
@@ -30,6 +31,7 @@ export class Compilation extends Tapable {
   outputFileSystem: any
   entries: any[]
   modules: any[]
+  asyncChunkCounter: number | undefined
   _modules: Record<ModuleId, object> // {模块id：模块对象}
   chunks: Chunk[] = []
   hooks: {
@@ -71,12 +73,12 @@ export class Compilation extends Tapable {
    * @param callback
    */
   addEntry(context, entry, name, callback) {
-    this._addModuleChain(context, entry, name, (err, module) => {
+    this._addModuleChain(context, entry, name, false, (err, module) => {
       callback(err, module)
     })
   }
 
-  _addModuleChain(context, rawRequest, name, callback) {
+  _addModuleChain(context, rawRequest, name, async, callback) {
     const resource = path.posix.join(context, rawRequest)
     this.createModule({
       name,
@@ -85,6 +87,7 @@ export class Compilation extends Tapable {
       resource,
       parser,
       moduleId: `./${path.posix.relative(context, resource)}`, // ./src/index.js
+      async,
     }, entryModule =>
       this.entries.push(entryModule), callback)
   }
@@ -167,10 +170,20 @@ export class Compilation extends Tapable {
     this.chunks.forEach((chunk) => {
       const file = `${chunk.name}.js`
       chunk.files.push(file)
-      const source = mainRender({
-        entryModuleId: chunk.entryModule.moduleId, // ./src/index.js
-        modules: chunk.modules, // [{moduleId: './src/index.js'}, {moduleId: './src/title.js'}]
-      })
+      let source
+      if (chunk.async) {
+        source = chunkRender({
+          chunkName: chunk.entryModule.moduleId,
+          modules: chunk.modules,
+        })
+      }
+      else {
+        source = mainRender({
+          entryModuleId: chunk.entryModule.moduleId, // ./src/index.js
+          modules: chunk.modules, // [{moduleId: './src/index.js'}, {moduleId: './src/title.js'}]
+        })
+      }
+
       this.emitAssets(file, source)
     })
   }

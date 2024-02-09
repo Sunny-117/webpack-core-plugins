@@ -2,6 +2,7 @@ import path from 'node:path'
 import types from 'babel-types'
 import generate from 'babel-generator'
 import traverse from 'babel-traverse'
+import async from 'neo-async'
 import type { Compilation } from '../Compilation'
 import type { Parser } from '../Parser'
 
@@ -12,6 +13,13 @@ interface Dependencies {
   moduleId: string
   resource: string
 }
+interface Blocks {
+  async: boolean
+  entry: string
+  name: number
+  context: string
+}
+
 export class NormalModule {
   name: string
   context: any // /Users/fuzhiqiang/Desktop/jspack
@@ -22,6 +30,9 @@ export class NormalModule {
   _ast: any
   dependencies: Dependencies[]
   moduleId: string | undefined
+  blocks: Blocks[]
+
+  async: boolean
 
   constructor({
     name,
@@ -30,6 +41,7 @@ export class NormalModule {
     resource,
     parser,
     moduleId,
+    async,
   }) {
     this.name = name
     this.context = context
@@ -42,6 +54,10 @@ export class NormalModule {
     // this._source // source code
     // this._ast
     this.dependencies = [] // the module info of the current module deps
+    // 当前模块依赖哪些异步模块 import(那些模块)
+    this.blocks = []
+    // 表示当前的模块是属于一个异步代码块,还是一个同步代码块
+    this.async = async
   }
 
   /**
@@ -86,15 +102,43 @@ export class NormalModule {
                 moduleId: depModuleId, // 模块ID 它是一个相对于根目录的相对路径,以./开头
                 resource: depResource, // 依赖模块的绝对路径
               })
-              // 判断这个节点CallExpression它的callee是不是import类型
             }
-            else if (types.isImport(node.callee)) {}
+            // 判断这个节点CallExpression它的callee是不是import类型
+            else if (types.isImport(node.callee)) {
+              const moduleName = node.arguments[0].value// 1.模块的名称 ./title.js
+              // 2.获得了可能的扩展名
+              const extName = !moduleName.split(path.posix.sep).pop().includes('.') ? '.js' : ''
+              // 3.获取依赖的模块的绝对路径
+              const depResource = path.posix.join(path.posix.dirname(this.resource), moduleName + extName)
+              // 4.依赖的模块ID ./+从根目录出发到依赖模块的绝对路径的相对路径 ./src/title.js
+              const depModuleId = `./${path.posix.relative(this.context, depResource)}`
+              // jspackChunkName: 'title'
+              let chunkName = compilation.asyncChunkCounter!++
+              if (Array.isArray(node.arguments[0].leadingComments)
+                && node.arguments[0].leadingComments.length > 0) {
+                const leadingComments = node.arguments[0].leadingComments[0].value
+                const regexp = /jspackChunkName:\s*['"]([^'"]+)['"]/
+                chunkName = leadingComments.match(regexp)[1] // TODO: 没有匹配项
+              }
+              nodePath.replaceWithSourceString(`__jspack_require__.e("${chunkName}").then(__jspack_require__.t.bind(null,"${depModuleId}", 7))`)
+              // 异步代码块的依赖
+              this.blocks.push({
+                context: this.context,
+                entry: depModuleId,
+                name: chunkName,
+                async: true,
+              })
+              console.log(this.blocks, '-------this.blocks-------')
+            }
           },
         })
         // 把转换后的语法树重新生成源代码
         const { code } = generate.default(this._ast)
         this._source = code
-        callback()
+        async.forEach(this.blocks, (block, done) => {
+          const { context, entry, name, async } = block
+          compilation._addModuleChain(context, entry, name, async, done)
+        }, callback)
       }
       else {
         throw new Error('source code is empty!')
