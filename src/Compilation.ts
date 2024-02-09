@@ -1,12 +1,21 @@
-import path from 'node:path'
+import path, { dirname } from 'node:path'
+import fs from 'node:fs'
+import { fileURLToPath } from 'node:url'
 import { SyncHook, Tapable } from 'tapable'
 import async from 'neo-async'
+import ejs from 'ejs'
 import type { Compiler } from './Compiler'
 import { NormalModuleFactory } from './plugins/NormalModuleFactory'
 import { Parser } from './Parser'
 import type { NormalModule } from './plugins/NormalModule'
 import { Chunk } from './Chunk'
 import type { JsPackOptions } from '.'
+
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
+
+const mainTemplate = fs.readFileSync(path.join(__dirname, 'templates', 'main.ejs'), 'utf8')
+const mainRender = ejs.compile(mainTemplate)
 
 const parser = new Parser() // single instance!! all module is shared
 
@@ -31,6 +40,9 @@ export class Compilation extends Tapable {
     afterChunks: any
   }
 
+  files: string[]
+  assets: any
+
   constructor(compiler: Compiler) {
     super()
     this.compiler = compiler
@@ -41,6 +53,8 @@ export class Compilation extends Tapable {
     this.entries = []
     this.modules = []
     this._modules = {}
+    this.files = []
+    this.assets = {} // {filename：文件内容}
     this.hooks = {
       succeedModule: new SyncHook(['module']),
       seal: new SyncHook(),
@@ -145,6 +159,24 @@ export class Compilation extends Tapable {
       chunk.modules = this.modules.filter(module => module.name === chunk.name)
     }
     this.hooks.afterChunks.call(this.chunks)
+    this.createChunkAssets()
     callback()
+  }
+
+  createChunkAssets() {
+    this.chunks.forEach((chunk) => {
+      const file = `${chunk.name}.js`
+      chunk.files.push(file)
+      const source = mainRender({
+        entryModuleId: chunk.entryModule.moduleId, // ./src/index.js
+        modules: chunk.modules, // [{moduleId: './src/index.js'}, {moduleId: './src/title.js'}]
+      })
+      this.emitAssets(file, source)
+    })
+  }
+
+  emitAssets(file: string, source: string) {
+    this.assets[file] = source
+    this.files.push(file)
   }
 }

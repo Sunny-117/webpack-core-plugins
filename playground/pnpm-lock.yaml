@@ -2,6 +2,21 @@ lockfileVersion: 5.3
 
 specifiers:
   '@sunny-117/jspack': link:..
+  mkdirp: 0.5.5
 
 dependencies:
   '@sunny-117/jspack': link:..
+  mkdirp: 0.5.5
+
+packages:
+
+  /minimist/1.2.8:
+    resolution: {integrity: sha512-2yyAR8qBkN3YuheJanUpWC5U3bb5osDywNB8RzDVlDwDHbocAJveqqj1u8+SVD7jkWT4yvsHCpWqqWqAxb0zCA==}
+    dev: false
+
+  /mkdirp/0.5.5:
+    resolution: {integrity: sha512-NKmAlESf6jMGym1++R0Ra7wvhV+wFW63FaSOFPwRahvea0gMUcGUhVeAg/0BC0wiv9ih5NYPB1Wn1UEI1/L+xQ==}
+    hasBin: true
+    dependencies:
+      minimist: 1.2.8
+    dev: false

@@ -1,5 +1,5 @@
 export class Chunk {
-  entryModule: string
+  entryModule: { moduleId: string }
   async: unknown
   name: string
   files: string[]

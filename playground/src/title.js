@@ -1,3 +1,1 @@
-module.exports = {
-  title: '名称',
-}
+exports.title = '名称'

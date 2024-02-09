@@ -1,7 +1,5 @@
 const { title } = require('./title')
 
-function test() {
-  console.log('test start...', title)
-}
+console.log(111)
 
-test()
+console.log(title)
