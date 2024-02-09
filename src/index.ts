@@ -1,5 +1,6 @@
 import { Compiler } from './Compiler'
-import { NodeEnvironmentPlugin } from './node/NodeEnvironmentPlugin'
+import { JsPackOptionsApply } from './plugins/JsPackOptionsApply'
+import { NodeEnvironmentPlugin } from './plugins/NodeEnvironmentPlugin'
 
 export interface JsPackPluginOptions {
   name: string
@@ -32,6 +33,7 @@ export function jspack(options: JsPackOptions) {
     for (const plugin of plugins)
       plugin.apply(compiler)
   }
+  new JsPackOptionsApply().process(options, compiler)
 
   return compiler
 }
