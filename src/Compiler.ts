@@ -1,6 +1,7 @@
 import { AsyncParallelHook, AsyncSeriesHook, SyncBailHook, SyncHook, Tapable } from 'tapable'
 import { NormalModuleFactory } from './plugins/NormalModuleFactory'
 import { Compilation } from './Compilation'
+import { Stats } from './Stats'
 import type { JsPackOptions } from '.'
 
 export interface hooksType {
@@ -19,6 +20,8 @@ export class Compiler extends Tapable {
   context: any
   hooks: hooksType
   options: JsPackOptions
+  inputFileSystem: any
+  outputFileSystem: any
 
   constructor(context) {
     super()
@@ -50,14 +53,7 @@ export class Compiler extends Tapable {
 
     const onCompiled = (err, compilation) => {
       console.log('onCompiled')
-      finalCallback(err, {
-        toJSON: () => ({
-          entries: [], // Show all entries
-          chunks: [], // Show all code blocks
-          module: [], // Show all module
-          assets: [], // Show all assets
-        }),
-      })
+      finalCallback(err, new Stats(compilation))
     }
     this.hooks.beforeRun.callAsync(this, (_err) => {
       this.hooks.run.callAsync(this, (_err) => {
@@ -72,9 +68,9 @@ export class Compiler extends Tapable {
       this.hooks.compile.call(params)
       const compilation = this.newCompilation(params)
 
-      this.hooks.make.callAsync(compilation, (_err) => {
+      this.hooks.make.callAsync(compilation, (err) => {
         console.log('make finished')
-        onCompiled()
+        onCompiled(err, compilation)
       })
     })
   }

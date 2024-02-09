@@ -2,20 +2,20 @@ import type { Compiler } from '../Compiler'
 
 export class SingleEntryPlugin {
   context: any
-  item: any
-  name: any
-  constructor(context, item, name) {
+  name: string
+  entry: string
+  constructor(context, entry, name) {
     this.context = context
-    this.item = item
+    this.entry = entry
     this.name = name
   }
 
   apply(compiler: Compiler) {
     compiler.hooks.make.tapAsync('SingleEntryPlugin', (compilation, callback) => {
       console.log('SingleEntryPlugin make...')
-      const { context, item, name } = this
+      const { context, entry, name } = this
       // start to compile from this entry
-      // compilation.addEntry(context, entry, name, callback)
+      compilation.addEntry(context, entry, name, callback)
     })
   }
 }
