@@ -17,6 +17,10 @@ node index.js
 4. Push to the branch (`git push origin my-new-feature`)
 5. Create new Pull Request
 
+# architecture
+
+<img src="./workflow.webp" />
+
 # License
 
 [MIT](./LICENSE)
