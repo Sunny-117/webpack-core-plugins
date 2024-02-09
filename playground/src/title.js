@@ -1,1 +1,1 @@
-exports.title = '名称'
+module.exports = 'title'

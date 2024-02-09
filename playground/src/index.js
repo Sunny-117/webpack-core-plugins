@@ -1,5 +1,3 @@
-const { title } = require('./title')
-
-console.log(111)
+const title = require('./title.js')
 
 console.log(title)
