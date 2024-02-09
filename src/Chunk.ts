@@ -1,8 +1,8 @@
 export class Chunk {
-  entryModule: unknown
+  entryModule: string
   async: unknown
-  name: unknown
-  files: unknown[]
+  name: string
+  files: string[]
   modules: unknown[]
   constructor(entryModule) {
     this.entryModule = entryModule// 此代码的入口模块

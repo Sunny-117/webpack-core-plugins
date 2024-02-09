@@ -68,9 +68,13 @@ export class Compiler extends Tapable {
       this.hooks.compile.call(params)
       const compilation = this.newCompilation(params)
 
-      this.hooks.make.callAsync(compilation, (err) => {
-        console.log('make finished')
-        onCompiled(err, compilation)
+      this.hooks.make.callAsync(compilation, (_err) => {
+        compilation.seal((_err) => {
+          this.hooks.afterCompile.callAsync(compilation, (err) => {
+            console.log('make finished')
+            onCompiled(err, compilation)
+          })
+        })
       })
     })
   }

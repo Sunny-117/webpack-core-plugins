@@ -5,6 +5,7 @@ import type { Compiler } from './Compiler'
 import { NormalModuleFactory } from './plugins/NormalModuleFactory'
 import { Parser } from './Parser'
 import type { NormalModule } from './plugins/NormalModule'
+import { Chunk } from './Chunk'
 import type { JsPackOptions } from '.'
 
 const parser = new Parser() // single instance!! all module is shared
@@ -21,9 +22,13 @@ export class Compilation extends Tapable {
   entries: any[]
   modules: any[]
   _modules: Record<ModuleId, object> // {模块id：模块对象}
+  chunks: Chunk[] = []
   hooks: {
     // trigger when a module had been built
     succeedModule: any
+    seal: any
+    beforeChunks: any
+    afterChunks: any
   }
 
   constructor(compiler: Compiler) {
@@ -38,6 +43,9 @@ export class Compilation extends Tapable {
     this._modules = {}
     this.hooks = {
       succeedModule: new SyncHook(['module']),
+      seal: new SyncHook(),
+      beforeChunks: new SyncHook(),
+      afterChunks: new SyncHook(),
     }
   }
 
@@ -120,5 +128,23 @@ export class Compilation extends Tapable {
       this.hooks.succeedModule.call(module)
       afterBuild(err, module)
     })
+  }
+
+  /**
+   * 把模块封装成代码块 chunk
+   * @param callback
+   */
+  seal(callback) {
+    this.hooks.seal.call()
+    this.hooks.beforeChunks.call()// 开始准备生成代码块
+    // 一般来说，默认情况下，每一个入口会生成一个代码块
+    for (const entryModule of this.entries) {
+      const chunk = new Chunk(entryModule)// 根据入口模块得到一个代码块
+      this.chunks.push(chunk)
+      // 对所有模块进行过滤,找出来那些名称跟这个chunk一样的模块,组成一个数组赋给chunk.modules
+      chunk.modules = this.modules.filter(module => module.name === chunk.name)
+    }
+    this.hooks.afterChunks.call(this.chunks)
+    callback()
   }
 }
