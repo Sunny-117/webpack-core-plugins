@@ -87,7 +87,8 @@ export class NormalModule {
                 depResource = path.posix.join(path.posix.dirname(this.resource), moduleName + extName)
               }
               else { // the third module
-                depResource = require.resolve(path.posix.join(this.context, 'node_modules', moduleName))
+                // ! TODO: depResource = require.resolve(path.posix.join(this.context, 'node_modules', moduleName))
+                depResource = `${path.posix.join(this.context, 'node_modules', moduleName)}/index.js`
                 depResource = depResource.replace(/\\/g, '/')// 把window里的 \转成 /
               }
               console.log('depResource >>', depResource) // /Users/fuzhiqiang/Desktop/jspack/playground/src/title.js
