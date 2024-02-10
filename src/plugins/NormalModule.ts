@@ -5,6 +5,7 @@ import traverse from 'babel-traverse'
 import async from 'neo-async'
 import type { Compilation } from '../Compilation'
 import type { Parser } from '../Parser'
+import { runLoaders } from '../loader-runner'
 
 interface Dependencies {
   name: string
@@ -150,8 +151,33 @@ export class NormalModule {
   doBuild(compilation: Compilation, callback) {
     this.getSource(compilation, (_err, source) => {
       // ! process loader ~
-      this._source = source
-      callback()
+      const { module: { rules } } = compilation.options
+      let loaders: string[] = []
+      for (let i = 0; i < rules.length; i++) {
+        const rule = rules[i]
+        if (rule.test.test(this.resource)) {
+          const useLoaders = rule.use
+          loaders.push(...useLoaders)
+        }
+      }
+      console.log('process source code by: ', { loaders }, 'loaders---')
+      // const resolveLoader = loader => require.resolve(path.posix.join(this.context, 'loaders', loader))
+      const resolveLoader = loader => `${path.posix.join(this.context, 'loaders', loader)}.js` // absolute path of loaders
+      loaders = loaders.map(resolveLoader)
+
+      console.log('loader\'s path>>>', loaders)
+
+      runLoaders({
+        resource: this.resource,
+        loaders,
+      }, (_err, { result }) => {
+        if (result) {
+          this._source = result.toString()
+          console.log('after loaders: ---->', this._source)
+          callback()
+        }
+        console.warn('no output')
+      })
     })
   }
 

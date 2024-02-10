@@ -14,4 +14,12 @@ export default {
     path: resolve(__dirname, 'dist'),
     filename: 'main.js',
   },
+  module: {
+    rules: [
+      {
+        test: /\.less$/,
+        use: ['style-loader', 'less-loader'],
+      },
+    ],
+  },
 }

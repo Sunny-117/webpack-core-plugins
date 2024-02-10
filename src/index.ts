@@ -20,6 +20,12 @@ export interface JsPackOptions {
     path: string
     filename: string
   }
+  module: {
+    rules: Array<{
+      test: RegExp
+      use: string[]
+    }>
+  }
 }
 
 export function jspack(options: JsPackOptions) {

@@ -13,4 +13,4 @@ import(/* jspackChunkName: "sum" */ './sum').then((result) => {
 
 const isArray = require('isarray')
 
-console.log(isArray([1, 2, 3]))
+isArray([1, 2, 3])

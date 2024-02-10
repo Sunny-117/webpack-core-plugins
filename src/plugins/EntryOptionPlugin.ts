@@ -9,7 +9,9 @@ export class EntryOptionPlugin {
   constructor() {}
   apply(compiler: Compiler) {
     compiler.hooks.entryOption.tap('EntryOptionPlugin', (context, entry) => {
+      // 1. 单入口
       itemToPlugin(context, entry, 'main').apply(compiler)
+      // TODO：2. 多入口
     })
   }
 }
