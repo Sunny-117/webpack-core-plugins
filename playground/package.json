@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {},
   "dependencies": {
-    "@sunny-117/jspack": "link:.."
+    "@sunny-117/jspack": "link:..",
+    "isarray": "^2.0.5"
   }
 }

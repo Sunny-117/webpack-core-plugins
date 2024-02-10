@@ -2,10 +2,13 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { defineConfig } from 'tsup'
 
-// 源文件夹和目标文件夹路径
 const sourceFolder = 'src/templates'
 const targetFolder = 'dist/templates'
 
+/*
+ * https://github.com/egoist/tsup/issues/369
+ * https://github.com/egoist/tsup/pull/403
+ */
 export default defineConfig({
   entry: {
     index: 'src/index.ts',
@@ -24,7 +27,6 @@ export default defineConfig({
   },
 })
 
-// 递归复制文件夹
 function copyFolderSync(source, target) {
   if (!fs.existsSync(target))
     fs.mkdirSync(target)
