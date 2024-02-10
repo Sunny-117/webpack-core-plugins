@@ -3,7 +3,9 @@
   "type": "module",
   "version": "0.0.1",
   "private": true,
-  "scripts": {},
+  "scripts": {
+    "build": "rm -rf dist && node index.js"
+  },
   "dependencies": {
     "@sunny-117/jspack": "link:..",
     "isarray": "^2.0.5"

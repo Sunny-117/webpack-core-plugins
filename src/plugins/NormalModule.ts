@@ -151,7 +151,7 @@ export class NormalModule {
   doBuild(compilation: Compilation, callback) {
     this.getSource(compilation, (_err, source) => {
       // ! process loader ~
-      const { module: { rules } } = compilation.options
+      const { module: { rules = [] } = {} } = compilation.options
       let loaders: string[] = []
       for (let i = 0; i < rules.length; i++) {
         const rule = rules[i]
@@ -162,6 +162,7 @@ export class NormalModule {
       }
       console.log('process source code by: ', { loaders }, 'loaders---')
       // const resolveLoader = loader => require.resolve(path.posix.join(this.context, 'loaders', loader))
+      // TODO: loaders寻找逻辑：自定义rule->node_modules
       const resolveLoader = loader => `${path.posix.join(this.context, 'loaders', loader)}.js` // absolute path of loaders
       loaders = loaders.map(resolveLoader)
 
