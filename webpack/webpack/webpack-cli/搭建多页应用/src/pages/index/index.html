@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Document</title>
+</head>
+
+<body>
+  <!-- 引入公共页头 -->
+  <!-- 内联写法：讲common/header/index.html交给html-loader处理， 这个loader作用就是吧这个html页面的内容放在这里 -->
+  <%= require("html-loader!../common/header/index.html") %>
+    <div class="main-container">首页</div>
+    <!-- 引入公共页尾 -->
+    <%= require("html-loader!../common/footer/index.html") %>
+</body>
+
+</html>

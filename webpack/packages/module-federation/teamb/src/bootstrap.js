@@ -1,0 +1,1 @@
+root.innerHTML = 'teamb';
