@@ -75,3 +75,11 @@
 ### 插件基本结构介绍
 ### 更复杂的插件开发场景
 ### 实战开发一个压缩构建资源为zip包的插件
+
+webpack4实战entry、output、loaders、plugins、文件指纹
+webpack4优化(dll、resolve、模块热替换、压缩、代码分割、可视化工具)
+Webpack4源码分析,懒加载原理、热更新原理
+编写自定义Loader(style-loader css-loader less-loader等)
+编写自定义Plugin(html-webpack-plugin)
+Webpack的事件机制tapable和AST抽象语法树
+编写Babel treeshaking插件手写一款自己的Webpack4
