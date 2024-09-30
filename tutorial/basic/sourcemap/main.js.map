@@ -1,0 +1,1 @@
+{"version":3,"file":"main.js","mappings":";;;;AAAA;AACA;AACA;;AAEA;;AAEA;AACA;AACA,IAAI;AACJ","sources":["webpack:///./src/index.js"],"sourcesContent":["// 语法降级\nconst sum = (a, v)=>a+v\nconsole.log(sum(1, 2))\n\n// polyfill\n\n// const p = new Promise((resolve)=>{\n//     resolve('ok')\n// })\n// console.log(p)\n"],"names":[],"sourceRoot":""}

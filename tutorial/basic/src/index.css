@@ -1,0 +1,9 @@
+@import url(./bg.css);
+@import url(./layout.css);
+body{
+    color:red;
+}
+
+::placeholder{
+    color:red;
+}

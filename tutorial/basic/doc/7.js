@@ -1,0 +1,1 @@
+console.log([1,2,false,null,undefined].filter(Boolean));
