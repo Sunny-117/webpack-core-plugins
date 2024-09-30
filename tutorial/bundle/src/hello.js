@@ -1,2 +1,3 @@
-let name = require('./name')
-export default 'hello'+name;
+const name = require('./name')
+
+export default `hello${name}`
