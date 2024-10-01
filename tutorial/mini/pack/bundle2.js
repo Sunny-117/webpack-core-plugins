@@ -15,6 +15,6 @@
         }),
       "./src/a.js":
         (function (module, exports) {
-          eval("module.exports = '3.4架构课2期'\r\n\n\n//# sourceURL=webpack:///./src/a.js?");
+          eval("module.exports = '3.44webpack'\r\n\n\n//# sourceURL=webpack:///./src/a.js?");
         })
     });
