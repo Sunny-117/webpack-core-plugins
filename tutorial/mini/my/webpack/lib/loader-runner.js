@@ -3,11 +3,11 @@ const path = require('path');
 const readFile = fs.readFile.bind(fs);
 const PATH_QUERY_FRAGMENT_REGEXP = /^([^?#]*)(\?[^#]*)?(#.*)?$/;
 
-function parsePathQueryFragment(resource) {//resource =./src/index.js?name=zhufeng#top
+function parsePathQueryFragment(resource) {//resource =./src/index.js?name=Sunny#top
     let result = PATH_QUERY_FRAGMENT_REGEXP.exec(resource);
     return {
         path: result[1],  //路径名 ./src/index.js
-        query: result[2],  //   ?name=zhufeng
+        query: result[2],  //   ?name=Sunny
         fragment: result[3]// #top
     }
 }
@@ -24,7 +24,7 @@ function convertArgs(args, raw) {
         args[0] = args[0].toString('utf8');
     }
 }
-//loader绝对路径 C:\aproject\zhufeng202009webpack\3.loader\loaders\inline-loader1.js
+//loader绝对路径 C:\aproject\webpack\3.loader\loaders\inline-loader1.js
 function createLoaderObject(loader) {
     let obj = {
         path: '',//当前loader的绝对路径
@@ -134,7 +134,7 @@ function runSyncOrAsync(fn, context, args, callback) {
     }
 }
 exports.runLoaders = function (options, callback) {
-    //要加载的资源的绝对路径 C:\aproject\zhufeng202009webpack\3.loader\src\index.js
+    //要加载的资源的绝对路径 C:\aproject\webpack\3.loader\src\index.js
     let resource = options.resource || '';
     //loaders的数组   loader的绝对路径的数组 
     let loaders = options.loaders || [];

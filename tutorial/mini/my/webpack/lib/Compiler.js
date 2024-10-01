@@ -10,7 +10,7 @@ class Compiler extends Tapable {
         super();
         this.context = context;
         this.hooks = {
-            //context项目根目录的绝对路径 C:\aproject\zhufeng202009webpack\8.my
+            //context项目根目录的绝对路径 C:\aproject\webpack\8.my
             //entry入口文件路径 ./src/index.js
             entryOption: new SyncBailHook(["context", "entry"]),
             beforeRun: new AsyncSeriesHook(["compiler"]),//运行前
@@ -32,7 +32,7 @@ class Compiler extends Tapable {
             let outputPath = this.options.output.path;//dist
             for(let file in assets){
                 let source = assets[file];
-                //是输出文件的绝对路径 C:\aproject\zhufeng202009webpack\8.my\dist\main.js
+                //是输出文件的绝对路径 C:\aproject\webpack\8.my\dist\main.js
                 let targetPath = path.posix.join(outputPath,file);
                 this.outputFileSystem.writeFileSync(targetPath,source,'utf8');
             }

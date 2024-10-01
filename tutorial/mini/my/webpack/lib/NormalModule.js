@@ -7,9 +7,9 @@ const {runLoaders} = require('./loader-runner');
 class NormalModule{
   constructor({name,context,rawRequest,resource,parser,moduleId,async}){
     this.name = name;
-    this.context = context;//C:\aproject\zhufeng202009webpack\8.my
+    this.context = context;//C:\aproject\webpack\8.my
     this.rawRequest = rawRequest;//src\index.js
-    //C:\aproject\zhufeng202009webpack\8.my\src\index.js
+    //C:\aproject\webpack\8.my\src\index.js
     this.resource = resource;//这是这个模块的绝对路径
     //这是AST解析器,可以把源代码转成AST抽象语法树
     this.parser = parser;
@@ -50,17 +50,17 @@ class NormalModule{
                 //2.获得可能的扩展名
                 let extName = moduleName.split(path.posix.sep).pop().indexOf('.')==-1?'.js':'';
                 //3.获取依赖模块(./src/title.js)的绝对路径 win \ linux /
-                //C:\aproject\zhufeng202009webpack\8.my\src\title.js
+                //C:\aproject\webpack\8.my\src\title.js
                 depResource = path.posix.join(path.posix.dirname(this.resource),moduleName+extName);
               }else{//否则是一个第三方模块,也就是放在node_modules里的
-                //C:\aproject\zhufeng202009webpack\8.my\node_modules\isarray\index.js
+                //C:\aproject\webpack\8.my\node_modules\isarray\index.js
                 depResource = require.resolve(path.posix.join(this.context,'node_modules',moduleName))
                 depResource=depResource.replace(/\\/g,'/');//把window里的 \转成 /
               }
               //4.依赖的模块ID ./+从根目录出发到依赖模块的绝对路径的相对路径
              //let depModuleId = './'+path.posix.relative(this.context,depResource);
-             //depResource=C:\aproject\zhufeng202009webpack\8.my\node_modules\isarray\index.js
-             //this.context C:\aproject\zhufeng202009webpack\8.my\
+             //depResource=C:\aproject\webpack\8.my\node_modules\isarray\index.js
+             //this.context C:\aproject\webpack\8.my\
              //./node_modules/isarray/index.js
              let depModuleId = '.'+depResource.slice(this.context.length);
              //把require模块路径从./title.js变成了./src/title.js

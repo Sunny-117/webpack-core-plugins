@@ -1,0 +1,13 @@
+{
+  "name": "webpack-public",
+  "version": "1.0.0",
+  "description": "模块化是指把一个复杂的系统分解到多个模块以方便编码。",
+  "main": "a.js",
+  "devDependencies": {
+    "webpack": "^4.0.1",
+    "webpack-cli": "^2.0.9"
+  },
+  "dependencies": {
+    "ejs": "^2.5.7"
+  }
+}
