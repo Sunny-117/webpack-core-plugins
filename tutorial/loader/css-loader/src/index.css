@@ -1,0 +1,10 @@
+@import "./global.css";
+body{
+    color: red;
+}
+#root{
+    background-image: url(./images/kf.jpg);
+    background-size: contain;
+    width: 100px;
+    height:100px;
+}
